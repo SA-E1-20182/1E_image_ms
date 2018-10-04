@@ -1,4 +1,4 @@
-version: "1.0"
+version: "2.1"
 services:
   image-ms:
     build: .
@@ -7,12 +7,16 @@ services:
     depends_on:
       image-db:
         condition: service_healthy
+    links:
+    - image-db
+
+  image-db:
+    image: redis
+    volumes:
+      - /home/juan/Documents/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
     healthcheck:
-      test: "curl -I courses-ms:3000/courses-ms/resources/courses/ --fail"
+      test: "redis-cli PING"
       interval: 20s
       retries: 10
-
-  courses-db:
-    image: redis:4.0.11
-    ports:
-      - "3306:3306"

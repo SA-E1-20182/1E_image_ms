@@ -8,7 +8,7 @@ info:
   license:
     name: Software Architecture 2018-II
 host: 192.168.99.101:3000
-basePath: /courses-ms/resources
+basePath: /image/
 schemes:
   - http
 consumes:
@@ -26,8 +26,16 @@ paths:
           required: true
           description: Image form
           schema:
-            $ref: '#/definitions/CourseInput'
+            $ref: '#/definitions/ImageInput'
         - name: project
+          in: formData
+          required: true
+          description: String
+        - name: version
+          in: formData
+          required: true
+          description: String
+        - name: page
           in: formData
           required: true
           description: String
@@ -43,72 +51,66 @@ paths:
           schema:
             $ref: '#/definitions/ErrorModel'
 
-  /image/{code}:
+  /image/{id}:
     get:
-      summary: Returns a course with the given code
-      operationId: getCourseByCode
+      summary: Returns a image with the given code
+      operationId: getImageByCode
       parameters:
-        - name: code
+        - name: id
           in: path
-          description: The code of the course to be returned
+          description: The code of the image to be returned
           required: true
           type: integer
       responses:
         '200':
           description: Ok
           schema:
-            $ref: '#/definitions/Course'
+            $ref: '#/definitions/image'
         '404':
           description: Not Found
           schema:
             $ref: '#/definitions/ErrorModel'
-        '406':
-            description: Not Acceptable (Invalid Params)
-            schema:
-              $ref: '#/definitions/ErrorModel'
         '500':
           description: unexpected error
           schema:
             $ref: '#/definitions/ErrorModel'
 
     put:
-      summary: Updates a course with the given code
-      operationId: updateCourse
+      summary: Updates a image with the given code
+      operationId: updateImage
       parameters:
-        - name: code
+        - name: id
           in: path
           description: The code of the course to be updated
           required: true
           type: integer
-        - name: course
-          in: body
+        - name: image
+          in: formData
           required: true
-          description: Course Object
+          description: Image form
           schema:
-            $ref: '#/definitions/CourseInput'
+            $ref: '#/definitions/ImageInput'
       responses:
-        '204':
-          description: No Content
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/image'
         '404':
           description: Not Found
           schema:
             $ref: '#/definitions/ErrorModel'
-        '406':
-            description: Not Acceptable (Invalid Params)
-            schema:
-              $ref: '#/definitions/ErrorModel'
         '500':
           description: unexpected error
           schema:
             $ref: '#/definitions/ErrorModel'
 
     delete:
-      summary: Deletes a course with the given code
-      operationId: deleteCourse
+      summary: Deletes a image with the given code
+      operationId: deleteImage
       parameters:
-        - name: code
+        - name: id
           in: path
-          description: The code of the course to be deleted
+          description: The code of the image to be deleted
           required: true
           type: integer
       responses:
@@ -118,10 +120,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/ErrorModel'
-        '406':
-            description: Not Acceptable (Invalid Params)
-            schema:
-              $ref: '#/definitions/ErrorModel'
         '500':
           description: unexpected error
           schema:
@@ -130,38 +128,31 @@ paths:
 definitions:
 
   # Courses
-  Course:
-    type: object
-    properties:
-      code:
-        type: integer
-      name:
-        type: string
-      credits:
-        type: integer
-      students:
-        type: integer
-
-  CourseInput:
+  image:
     type: object
     properties:
       name:
         type: string
-      credits:
-        type: integer
-
-  CoursesList:
-    type: object
-    required:
-      - total
-      - list
-    properties:
-      total:
+      data:
         type: number
-      list:
-        type: array
-        items:
-          $ref: '#/definitions/Course'
+      encoding:
+        type: string
+      type:
+        type: string
+
+  ImageInput:
+    type: object
+    properties:
+      file:
+        type: object
+      project:
+        type: string
+      version:
+        type: integer
+      page:
+        type: integer
+
+
 
 # Errors
   ErrorModel:
@@ -176,4 +167,3 @@ definitions:
         type: number
       description:
         type: object
-

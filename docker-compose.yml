@@ -1,0 +1,18 @@
+version: "1.0"
+services:
+  image-ms:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      image-db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -I courses-ms:3000/courses-ms/resources/courses/ --fail"
+      interval: 20s
+      retries: 10
+
+  courses-db:
+    image: redis:4.0.11
+    ports:
+      - "3306:3306"

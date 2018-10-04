@@ -19,21 +19,12 @@ client.on('error', function(err){
   console.log('Something went wrong ', err)
 });
 
-/*app.get('/image/:id', function(req, res, next) {
-  var itemId = req.params.id;
-  client.get(itemId, function(error, result) {
-    if (error) throw error;
-		saveImage("/" + string(itemId), result);
-    res.send('image ' + itemId +' is '+ result)
-  });
-});*/
-
-app.get('/image/:project/:version/:page/', function(req, res) {
-		var name = req.params.project +'v'+ req.params.version +'p'+ req.params.page + '.png';
-		downloadPath = __dirname + '/uploads/' + name;
-		if (fs.existsSync(uploadPath)) {
-			res.sendFile(path.join(downloadPath));
+app.get('/image/:id/', function(req, res) {
+  client.get(req.params.id,function(error, result){
+    if (fs.existsSync(result)) {
+			res.sendFile(path.join(result));
 		}else{return res.status(404).send('Image not found.');}
+  });
 });
 
 app.post('/image/', function(req, res) {
@@ -42,28 +33,43 @@ app.post('/image/', function(req, res) {
   let sampleFile = req.files.file;
 	sampleFile.name = req.body.project +'v'+ req.body.version +'p'+ req.body.page + '.png';
 	uploadPath = __dirname + '/uploads/' + sampleFile.name;
+  client.incr("counter");
   sampleFile.mv(uploadPath, function(err) {
     if (err) {
       return res.status(500).send(err);
     }
-    res.send('El archivo fue guardado bajo el nombre de ' + sampleFile.name);
+    client.get("counter", function(error, result) {
+      if (error) throw error;
+      client.set(result, uploadPath, redis.print)
+      res.send('El archivo fue guardado con el codigo ' + result);
+    });
   });
 });
 
-app.set('/image/', function(req, res) {
-		if (!req.files)
-    	return res.status(400).send('Missing image to update.');
-		let sampleFile = req.files.file;
-		sampleFile.name = req.params.project +'v'+ req.params.version +'p'+ req.params.page + '.png';
-		console.log(sampleFile.name)
-		uploadPath = __dirname + '/uploads/' + sampleFile.name;
-		if (fs.existsSync(uploadPath)) {
-    	fs.unlinkSync(uploadPath);
-			sampleFile.mv(uploadPath, function(err) {
-		    if (err) {
-		      return res.status(500).send(err);
-		    }
-		    res.send('El archivo ' + sampleFile.name +' has sido actualizado');
-		  });
-		}else{return res.status(400).send('No image to update.');}
+app.put('/image/:id/', function(req, res) {
+	if (!req.files)
+    return res.status(400).send('Missing image to update.');
+  let sampleFile = req.files.file;
+  client.get(req.params.id,function(error, result){
+    if (fs.existsSync(result)) {
+      sampleFile.mv(result, function(err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      res.send('El archivo con codigo ' + req.params.id + ' ha sido actualizado');
+      });
+    }else{return res.status(404).send('No image to update.');}
+  });
+});
+
+app.delete('/image/:id/', function(req, res) {
+  client.get(req.params.id,function(error, result){
+    if (fs.existsSync(result)) {
+      fs.unlink(result, (err) => {
+        if (err) throw err;
+        res.send('El archivo con codigo ' + req.params.id + ' ha sido eliminado');
+      });
+      client.del(req.params.id)
+		}else{return res.status(404).send('Image not found.');}
+  });
 });

@@ -2,7 +2,7 @@ var redis = require('redis');
 var express = require("express");
 var fileUpload = require("express-fileupload");
 var bodyParser = require('body-parser');
-var client = redis.createClient();
+var client = redis.createClient(6379,'image-db');
 var app = express();
 var path = require('path');
 var fs = require('fs');
@@ -11,7 +11,7 @@ app.use(fileUpload());
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var server = app.listen(8080, function () {
+var server = app.listen(3000, function () {
     console.log('Server is running..');
 });
 

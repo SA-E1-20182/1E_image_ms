@@ -12,8 +12,6 @@ services:
 
   image-db:
     image: redis
-    volumes:
-      - /home/juan/Documents/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
       - "6379:6379"
     healthcheck:

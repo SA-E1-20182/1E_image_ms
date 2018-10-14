@@ -12,9 +12,11 @@ basePath: /image/
 schemes:
   - http
 consumes:
+  - aplication/json
   - multipart/form-data
 produces:
   - multipart/form-data
+  - aplication/json
 paths:
   /image:
     post:

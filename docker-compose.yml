@@ -3,7 +3,7 @@ services:
   image-ms:
     build: .
     ports:
-      - "3000:3000"
+      - "3003:3003"
     depends_on:
       image-db:
         condition: service_healthy

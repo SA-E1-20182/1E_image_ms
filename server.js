@@ -37,7 +37,6 @@ app.post('/image/', function(req, res) {
   if (!req.files)
     return res.status(400).send('No files were uploaded.');
   let sampleFile = req.files.file;
-  sampleFile.name = req.body.project +'v'+ req.body.version +'p'+ req.body.page + '.png';
 	uploadPath = __dirname + '/uploads/' + sampleFile.name;
   client.incr("counter");
   sampleFile.mv(uploadPath, function(err) {
@@ -74,7 +73,7 @@ app.put('/image/:id/', function(req, res) {
       function(err, result) {
         client.set(numero, result.url, redis.print)
       });
-    res.send('La imagen con el codigo ' + numero + " ha sido actualizada");
+    res.send(true);
   });
 });
 
@@ -86,7 +85,7 @@ app.delete('/image/:id/', function(req, res) {
       cloudinary.uploader.destroy(numero,
         function(error, result){console.log(result, error)});
       client.del(numero)
-      res.send('La imagen con el codigo ' + numero + " ha sido eliminada");
+      res.send(true);
     }else{return res.status(404).send('Image not found.')};
   });
 });

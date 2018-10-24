@@ -17,7 +17,9 @@ cloudinary.config({
 
 app.use(fileUpload());
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+
 
 var server = app.listen(3003, function () {
     console.log('Server is running..');
@@ -26,6 +28,20 @@ var server = app.listen(3003, function () {
 client.on('error', function(err){
   console.log('Something went wrong ', err)
 });
+
+app.post('/image/collection/', function(req, res) {
+  console.log(JSON.stringify(req.body))
+  client.mget(req.body.codes,function(error, result){
+    res.send(result)
+  });
+});
+
+/*app.get('/image/', function(req, res) {
+  console.log(JSON.stringify(req.params))
+  client.mget(req.params.codes,function(error, result){
+    res.send(result)
+  });
+});*/
 
 app.get('/image/:id/', function(req, res) {
   client.get(req.params.id,function(error, result){

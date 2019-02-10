@@ -1,12 +1,9 @@
-version: "2.1"
+version: "2.0"
 services:
   image-ms:
     build: .
     ports:
-      - "3003:3003"
-    depends_on:
-      image-db:
-        condition: service_healthy
+      - "80:80"
     links:
     - image-db
 
@@ -14,7 +11,3 @@ services:
     image: redis
     ports:
       - "6379:6379"
-    healthcheck:
-      test: "redis-cli PING"
-      interval: 20s
-      retries: 10

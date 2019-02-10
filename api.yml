@@ -7,7 +7,7 @@ info:
   description: JavaScript + Redis
   license:
     name: Software Architecture 2018-II
-host: 192.168.99.101:3000
+host: 192.168.99.101:80
 basePath: /image/
 schemes:
   - http

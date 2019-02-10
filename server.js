@@ -21,7 +21,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 
-var server = app.listen(3003, function () {
+var server = app.listen(80, function () {
     console.log('Server is running..');
 });
 

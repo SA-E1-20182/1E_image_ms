@@ -18,6 +18,7 @@
   "homepage": "https://github.com/olimita/Image#readme",
   "dependencies": {
     "cloudinary": "^1.11.0",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
     "express-fileupload": "^1.0.0-alpha.1",
     "multer": "^1.4.1",

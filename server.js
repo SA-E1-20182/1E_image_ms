@@ -3,6 +3,7 @@ var express = require("express");
 var fileUpload = require("express-fileupload");
 var bodyParser = require('body-parser');
 var cloudinary = require('cloudinary');
+var cors = require('cors')
 var client = redis.createClient(6379, 'image-db');
 var app = express();
 var path = require('path');
@@ -19,6 +20,8 @@ app.use(fileUpload());
 app.use(express.static('public'));
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(cors());
 
 
 var server = app.listen(80, function () {
